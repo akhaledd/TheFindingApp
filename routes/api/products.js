@@ -1,34 +1,34 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Product = require('../../models/product.model');
-const ObjectId = require('mongoose').Types.ObjectId;
-const multer = require('multer');
-const path = require('path');
+const Product = require("../../models/product.model");
+const ObjectId = require("mongoose").Types.ObjectId;
+const multer = require("multer");
+const path = require("path");
 
 // Start File Upload
 var store = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './public/uploads/');
+  destination: function(req, file, cb) {
+    cb(null, "./public/uploads/");
   },
-  filename: function (req, file, cb) {
-    var getFileExt = function (filename) {
+  filename: function(req, file, cb) {
+    var getFileExt = function(filename) {
       var fileExt = filename.split(".");
       if (fileExt.length === 1 || (fileExt[0] === "" && fileExt.length === 2)) {
         return "";
       }
       return fileExt.pop();
-    }
-    cb(null, Date.now() + '.' + getFileExt(file.originalname));
+    };
+    cb(null, Date.now() + "." + getFileExt(file.originalname));
   }
 });
 
 var upload = multer({
   storage: store
-}).single('file');
+}).single("file");
 // End File Upload (Check Post)
 
-router.post('/upload', function (req, res) {
-  upload(req, res, function (err) {
+router.post("/upload", function(req, res) {
+  upload(req, res, function(err) {
     if (err) {
       res.status(501).send({
         error: err
@@ -42,7 +42,7 @@ router.post('/upload', function (req, res) {
   });
 });
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   let products = await Product.find();
 
   if (products) {
@@ -51,12 +51,12 @@ router.get('/', async (req, res) => {
     });
   } else {
     res.send({
-      error: 'No products available.'
+      error: "No products available."
     });
   }
 });
 
-router.post('/add', async (req, res) => {
+router.post("/add", async (req, res) => {
   try {
     let product = new Product({
       displayName: req.body.displayName,
@@ -67,7 +67,6 @@ router.post('/add', async (req, res) => {
       mainImage: req.body.mainImage,
       otherImages: req.body.otherImages
     });
-
 
     let result = await product.save();
     if (result) {
@@ -86,7 +85,7 @@ router.post('/add', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     let id = req.params.id;
 
@@ -101,17 +100,17 @@ router.get('/:id', async (req, res) => {
           product
         });
       }
-      res.status(404).send('404 - Not Found!');
+      res.status(404).send("404 - Not Found!");
       return;
     }
-    res.status(500).send('500 - Something was error!');
+    res.status(500).send("500 - Something was error!");
     return;
   } catch (err) {
-    console.error('Error occurred: ', err);
+    console.error("Error occurred: ", err);
   }
 });
 
-router.delete('/delete/:id', async (req, res) => {
+router.delete("/delete/:id", async (req, res) => {
   try {
     let id = req.params.id;
 
@@ -126,15 +125,15 @@ router.delete('/delete/:id', async (req, res) => {
           deleted: true
         });
       }
-      return res.status(404).send('404 - Not Found!');
+      return res.status(404).send("404 - Not Found!");
     }
-    return res.status(500).send('500 - Something was error!');
+    return res.status(500).send("500 - Something was error!");
   } catch (err) {
-    console.error('Error occurred: ', err);
+    console.error("Error occurred: ", err);
   }
 });
 
-router.put('/edit/:id', async (req, res) => {
+router.put("/edit/:id", async (req, res) => {
   try {
     let id = req.params.id;
 
@@ -152,21 +151,28 @@ router.put('/edit/:id', async (req, res) => {
         otherImages: req.body.otherImages
       };
 
-      await Product.findByIdAndUpdate(id, {
-        $set: product
-      }, {
-        new: true
-      }, async (err, doc) => {
-        if (!err) {
-          await doc.save();
-          await res.send(doc);
-        } else {
-          console.log('Error in product Update :' + JSON.stringify(err, undefined, 2));
+      await Product.findByIdAndUpdate(
+        id,
+        {
+          $set: product
+        },
+        {
+          new: true
+        },
+        async (err, doc) => {
+          if (!err) {
+            await doc.save();
+            await res.send(doc);
+          } else {
+            console.log(
+              "Error in product Update :" + JSON.stringify(err, undefined, 2)
+            );
+          }
         }
-      });
+      );
     }
 
-    res.status(404).send('404 - Not Found! - Empty');
+    res.status(404).send("404 - Not Found! - Empty");
   } catch (err) {
     res.send({
       catch: err
