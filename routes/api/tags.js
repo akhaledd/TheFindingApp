@@ -8,7 +8,9 @@ router.get('/', async (req, res) => {
    let tags = await Tags.find();
 
    if (tags) {
-      res.send({tags});
+      res.send({
+         tags
+      });
    } else {
       res.send({
          error: 'No tags exist.'
@@ -52,9 +54,9 @@ router.get('/:id', async (req, res) => {
          let tag = await Tags.findById(id);
 
          if (tag) {
-            res.send(
-               {tag}
-            );
+            res.send({
+               tag
+            });
          }
          return res.status(404).send('404 - Not Found!');
       }

@@ -97,16 +97,16 @@ router.post('/login', async (req, res) => {
   });
 });
 
-router.put('/edit/:id',async (req, res) => {
+router.put('/edit/:id', async (req, res) => {
   let id = req.params.id;
 
   if (!ObjectId.isValid(id))
     return res.status(400).send(`Not valid code.`);
-    
+
   let user = {
     fullName: {
-        firstName: req.body.fullName.firstName,
-        lastName: req.body.fullName.lastName
+      firstName: req.body.fullName.firstName,
+      lastName: req.body.fullName.lastName
     },
     phoneNumber: req.body.phoneNumber,
     address: req.body.address
@@ -128,7 +128,9 @@ router.put('/edit/:id',async (req, res) => {
         tags: doc.tags,
         createdAt: doc.createdAt
       }, config.JWT_SECRET);
-      res.send({token});
+      res.send({
+        token
+      });
     } else {
       console.log('Error in updating user :' + JSON.stringify(err, undefined, 2));
     }

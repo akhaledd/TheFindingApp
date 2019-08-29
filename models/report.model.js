@@ -35,6 +35,6 @@ reportSchema.plugin(mongoose_delete, {
   deletedAt: true
 });
 
-const Orders = mongoose.model('Order', reportSchema);
+const Orders = mongoose.model('Orders', reportSchema);
 
 module.exports = Orders;

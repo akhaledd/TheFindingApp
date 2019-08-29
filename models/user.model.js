@@ -33,6 +33,10 @@ var userSchema = new Schema({
   tags: [{
     type: Schema.Types.ObjectId,
     ref: 'Tags'
+  }],
+  orders: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Orders'
   }]
 }, {
   timestamps: {
@@ -45,6 +49,6 @@ userSchema.plugin(mongoose_delete, {
   deletedAt: true
 });
 
-const Users = mongoose.model('User', userSchema);
+const Users = mongoose.model('Users', userSchema);
 
 module.exports = Users;
