@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongoose_delete = require('mongoose-delete');
 
-var orderSchema = new Schema({
+const orderSchema = new Schema({
   totalPrice: {
     type: Number,
     required: true
@@ -28,11 +28,6 @@ var orderSchema = new Schema({
     required: true,
     type: String,
     default: 'Pending'
-  },
-  orderId: {
-    type: String,
-    required: true,
-    unique: true
   }
 }, {
   timestamps: {

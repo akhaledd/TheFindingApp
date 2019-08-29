@@ -20,57 +20,57 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/add", async (req, res) => {
-  try {
-    let order = new Order({
-      totalPrice: req.body.totalPrice,
-      subTotal: req.body.subTotal,
-      shipping: req.body.shipping,
-      tags: req.body.tags,
-      user: req.body.user,
-      status: "Incomplete",
-      orderId: req.body.orderId
-    });
+// router.post("/add", async (req, res) => {
+//   try {
+//     let order = new Order({
+//       totalPrice: req.body.totalPrice,
+//       subTotal: req.body.subTotal,
+//       shipping: req.body.shipping,
+//       tags: req.body.tags,
+//       user: req.body.user,
+//       status: "Incomplete",
+//       orderId: req.body.orderId
+//     });
 
-    let charge = stripe.charges.create({
-        amount: order.totalPrice,
-        currency: "usd",
-        source: req.body.token, // obtained with Stripe.js
-        //  description: "",
-        shipping: {
-          address: req.body.shipping.address,
-          name: req.body.shipping.name,
-          phone: req.body.shipping.phone
-        },
-        receipt_email: req.body.receipt_email
-      },
-      function (err, charge) {
-        if (err) {
-          throw err;
-        }
+//     let charge = stripe.charges.create({
+//         amount: order.totalPrice,
+//         currency: "usd",
+//         source: req.body.token, // obtained with Stripe.js
+//         //  description: "",
+//         shipping: {
+//           address: req.body.shipping.address,
+//           name: req.body.shipping.name,
+//           phone: req.body.shipping.phone
+//         },
+//         receipt_email: req.body.receipt_email
+//       },
+//       async function (err, charge) {
+//         if (err) {
+//           throw err;
+//         }
 
-        if (charge) {
-          order.status = 'Pending';
-          let result = await order.save();
-          if (result) {
-            res.send({
-              result,
-              charge
-            });
-          } else {
-            res.send({
-              error: "Failed Saving Order."
-            });
-          }
-        }
-      }
-    );
-  } catch (err) {
-    res.send({
-      error: "Catch Error - Couldn't Add Order" + err
-    });
-  }
-});
+//         if (charge) {
+//           order.status = 'Pending';
+//           let result = await order.save();
+//           if (result) {
+//             res.send({
+//               result,
+//               charge
+//             });
+//           } else {
+//             res.send({
+//               error: "Failed Saving Order."
+//             });
+//           }
+//         }
+//       }
+//     );
+//   } catch (err) {
+//     res.send({
+//       error: "Catch Error - Couldn't Add Order" + err
+//     });
+//   }
+// });
 
 router.get("/:id", async (req, res) => {
   try {
