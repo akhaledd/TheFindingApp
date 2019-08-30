@@ -32,11 +32,13 @@ var userSchema = new Schema({
   },
   tags: [{
     type: Schema.Types.ObjectId,
-    ref: 'Tags'
+    ref: 'Tags',
+    default: []
   }],
   orders: [{
     type: Schema.Types.ObjectId,
-    ref: 'Orders'
+    ref: 'Orders',
+    default: []
   }]
 }, {
   timestamps: {

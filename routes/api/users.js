@@ -42,8 +42,29 @@ router.post('/register', async (req, res) => {
 
     let result = await user.save();
 
+
     if (result) {
-      return res.send(result);
+      let admin = false;
+
+      if (result.email === 'ahmedkhaled511998@gmail.com' || result.email === 'admin@thefinderapp.com') {
+        admin = true;
+      }
+
+      let token = jwt.sign({
+        _id: result._id,
+        fullName: result.fullName,
+        phoneNumber: result.phoneNumber,
+        email: result.email,
+        address: result.address,
+        tags: result.tags,
+        orders: result.orders,
+        admin,
+        createdAt: result.createdAt
+      }, config.JWT_SECRET);
+
+      return res.send({
+        token
+      });
     } else {
       return res.send({
         error: 'Failed adding user.'
@@ -77,6 +98,12 @@ router.post('/login', async (req, res) => {
   let matching = bcrypt.compareSync(password, user.password);
 
   if (matching) {
+    let admin = false;
+
+    if (user.email === 'ahmedkhaled511998@gmail.com' || user.email === 'admin@thefinderapp.com') {
+      admin = true;
+    }
+
     let token = jwt.sign({
       _id: user._id,
       fullName: user.fullName,
@@ -84,6 +111,8 @@ router.post('/login', async (req, res) => {
       email: user.email,
       address: user.address,
       tags: user.tags,
+      orders: user.orders,
+      admin,
       createdAt: user.createdAt
     }, config.JWT_SECRET);
 
@@ -93,9 +122,44 @@ router.post('/login', async (req, res) => {
   }
 
   return res.send({
-    error: 'Not matching password.'
+    //not matching password
+    error: 'Invalid username or password.'
   });
 });
+
+// router.put('/add-tag/:id', async (req, res) => {
+//   try {
+//     let id = req.params.id;
+//     let tag = req.body._id;
+
+//     if (!ObjectId.isValid(id))
+//       return res.status(400).send(`Not valid code.`);
+
+//     let doc = await Users.findByIdAndUpdate(id, {
+//       $push: {
+//         tags: tag
+//       }
+//     }, {
+//       safe: true,
+//       upsert: true
+//     });
+
+//     if (doc) {
+//       return res.send({
+//         doc
+//       });
+//     }
+
+//     return res.send({
+//       error: "An error has occurred."
+//     });
+
+//   } catch (error) {
+//     return res.send({
+//       error
+//     });
+//   }
+// })
 
 router.put('/edit/:id', async (req, res) => {
   let id = req.params.id;
@@ -118,6 +182,12 @@ router.put('/edit/:id', async (req, res) => {
     new: true
   }, (err, doc) => {
     if (!err) {
+      let admin = false;
+
+      if (doc.email === 'ahmedkhaled511998@gmail.com' || doc.email === 'admin@pjdmeds.com') {
+        admin = true;
+      }
+
       doc.save();
       let token = jwt.sign({
         _id: doc._id,
@@ -126,6 +196,8 @@ router.put('/edit/:id', async (req, res) => {
         email: doc.email,
         address: doc.address,
         tags: doc.tags,
+        orders: doc.orders,
+        admin,
         createdAt: doc.createdAt
       }, config.JWT_SECRET);
       res.send({

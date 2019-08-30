@@ -5,7 +5,8 @@ const mongoose_delete = require('mongoose-delete');
 var tagSchema = new Schema({
   displayName: {
     type: String,
-    required: true
+    required: true,
+    default: 'New Tag'
   },
   assigned: {
     type: Boolean,
@@ -21,7 +22,8 @@ var tagSchema = new Schema({
   },
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'Users'
+    ref: 'Users',
+    required: true
   },
   activationDate: {
     type: Date
