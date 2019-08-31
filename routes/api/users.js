@@ -3,13 +3,18 @@ const router = express.Router();
 const Users = require('../../models/user.model');
 const ObjectId = require('mongoose').Types.ObjectId;
 const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const config = require('../../data.config');
 
 const saltRounds = 10;
 
 router.get('/', async (req, res) => {
-  let users = await Users.find();
+  let users = await Users.find({
+    email: {
+      $nin: ['ahmedkhaled511998@gmail.com', 'admin@thefinderapp.com']
+    }
+  });
   return res.send({
     users
   });
@@ -127,6 +132,54 @@ router.post('/login', async (req, res) => {
   });
 });
 
+router.get('/details/:id', async (req, res) => {
+  try {
+    let id = req.params.id;
+
+    if (!ObjectId.isValid(id))
+      return res.status(400).send(`No matching records with this ID: ${id}`);
+
+    if (id) {
+      let user = await Users.findOne({
+        _id: id
+      }).populate('tags').populate('orders');
+
+      if (user) {
+        return res.send({
+          user
+        });
+      }
+      return res.status(404).send('404 - Not Found!');
+    }
+    return res.status(500).send('500 - Something was error!');
+  } catch (err) {
+    console.error('Error occurred: ', err);
+  }
+});
+
+router.delete('/delete/:id', async (req, res) => {
+  try {
+    let id = req.params.id;
+
+    if (!ObjectId.isValid(id))
+      return res.status(400).send(`No matching records with this ID: ${id}`);
+
+    if (id) {
+      let result = await Users.deleteById(id);
+
+      if (result) {
+        return res.send({
+          result
+        });
+      }
+      return res.status(404).send('404 - Not Found!');
+    }
+    return res.status(500).send('500 - Something was error!');
+  } catch (err) {
+    console.error('Error occurred: ', err);
+  }
+});
+
 // router.put('/add-tag/:id', async (req, res) => {
 //   try {
 //     let id = req.params.id;
@@ -173,13 +226,25 @@ router.put('/edit/:id', async (req, res) => {
       lastName: req.body.fullName.lastName
     },
     phoneNumber: req.body.phoneNumber,
-    address: req.body.address
+    address: req.body.address,
+    email: req.body.email
   };
+
+  let count = await Users.find({
+    email: user.email
+  }).count();
+
+  if (count > 0) {
+    return res.send({
+      error: 'Email already belongs to another user.'
+    });
+  }
 
   await Users.findByIdAndUpdate(id, {
     $set: user
   }, {
-    new: true
+    new: true,
+    // upsert: true
   }, (err, doc) => {
     if (!err) {
       let admin = false;
@@ -188,7 +253,7 @@ router.put('/edit/:id', async (req, res) => {
         admin = true;
       }
 
-      doc.save();
+      // doc.save();
       let token = jwt.sign({
         _id: doc._id,
         fullName: doc.fullName,

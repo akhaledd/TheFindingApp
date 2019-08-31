@@ -37,7 +37,8 @@ const orderSchema = new Schema({
 });
 
 orderSchema.plugin(mongoose_delete, {
-  deletedAt: true
+  deletedAt: true,
+  overrideMethods: true
 });
 
 const Orders = mongoose.model('Orders', orderSchema);

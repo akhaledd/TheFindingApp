@@ -36,7 +36,8 @@ var tagSchema = new Schema({
 });
 
 tagSchema.plugin(mongoose_delete, {
-  deletedAt: true
+  deletedAt: true,
+  overrideMethods: true
 });
 
 const Tags = mongoose.model('Tags', tagSchema);

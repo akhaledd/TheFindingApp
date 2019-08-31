@@ -32,7 +32,8 @@ var reportSchema = new Schema({
 });
 
 reportSchema.plugin(mongoose_delete, {
-  deletedAt: true
+  deletedAt: true,
+  overrideMethods: true
 });
 
 const Reports = mongoose.model('Reports', reportSchema);

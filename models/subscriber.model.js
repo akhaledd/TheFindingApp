@@ -26,7 +26,8 @@ var subscriberSchema = new Schema({
 });
 
 subscriberSchema.plugin(mongoose_delete, {
-  deletedAt: true
+  deletedAt: true,
+  overrideMethods: true
 });
 
 const Subscribers = mongoose.model('Subscribers', subscriberSchema);

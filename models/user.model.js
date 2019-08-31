@@ -48,6 +48,7 @@ var userSchema = new Schema({
 });
 
 userSchema.plugin(mongoose_delete, {
+  overrideMethods: true,
   deletedAt: true
 });
 

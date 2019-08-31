@@ -44,7 +44,8 @@ var productSchema = new Schema({
 });
 
 productSchema.plugin(mongoose_delete, {
-  deletedAt: true
+  deletedAt: true,
+  overrideMethods: true
 });
 
 const Products = mongoose.model('Products', productSchema);
