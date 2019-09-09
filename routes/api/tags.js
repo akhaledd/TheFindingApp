@@ -6,7 +6,9 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const path = require('path');
 
 router.get('/', async (req, res) => {
-   let tags = await Tags.find().populate('user');
+   let tags = await Tags.find().populate('user').sort({
+      createdAt: 'desc'
+   });
 
    if (tags) {
       res.send({
@@ -28,7 +30,9 @@ router.get('/user/:id', async (req, res) => {
 
       let tags = await Tags.find({
          user: id
-      }).populate('user');
+      }).populate('user').sort({
+         createdAt: 'desc'
+      });
 
       if (tags) {
          return res.send({
@@ -49,19 +53,19 @@ router.post('/add', async (req, res) => {
    try {
       let tag = new Tags({
          displayName: req.body.displayName,
-         user: req.body.user
+         user: req.body.user,
+         product: req.body.product
       });
 
       let result = await tag.save();
       if (result) {
-         await Users.findByIdAndUpdate(result.user, {
-            $push: {
-               tags: result._id
-            }
-         }, {
-            safe: true,
-            upsert: true
-         });
+         // await Users.findByIdAndUpdate(req.body.user, {
+         //    $push: {
+         //       tags: result._id
+         //    }
+         // }, {
+         //    new: true
+         // });
 
          res.send({
             result
@@ -83,17 +87,22 @@ router.get('/:id', async (req, res) => {
       let id = req.params.id;
 
       if (!ObjectId.isValid(id))
-         return res.status(400).send(`No matching records with this ID: ${id}`);
+         return res.send({
+            error: 'Tag Not Found'
+         });
 
       if (id) {
-         let tag = await Tags.findById(id).populate('user');
+         let tag = await Tags.findById(id).populate('user').populate('product');
 
          if (tag) {
             return res.send({
                tag
             });
+         } else {
+            return res.send({
+               error: 'Tag Not Found'
+            });
          }
-         return res.status(404).send('404 - Not Found!');
       }
       return res.status(500).send('500 - Something was error!');
    } catch (err) {
@@ -136,10 +145,13 @@ router.put('/edit/:id', async (req, res) => {
             displayName: req.body.displayName,
             activated: req.body.activated,
             description: req.body.description,
-            user: req.body.user,
+            user: req.body.user._id,
+            product: req.body.product._id
          };
 
-         let doc = await Tags.findByIdAndUpdate(id, {
+         let doc = await Tags.updateOne({
+            _id: id
+         }, {
             $set: tag
          }, {
             new: true
@@ -157,7 +169,7 @@ router.put('/edit/:id', async (req, res) => {
       return res.status(404).send('404 - Not Found! - Empty');
    } catch (err) {
       return res.send({
-         catch: err
+         err
       });
    }
 });

@@ -27,6 +27,11 @@ var tagSchema = new Schema({
   },
   activationDate: {
     type: Date
+  },
+  product: {
+    type: Schema.Types.ObjectId,
+    ref: 'Products',
+    required: true
   }
 }, {
   timestamps: {

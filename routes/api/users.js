@@ -14,6 +14,8 @@ router.get('/', async (req, res) => {
     email: {
       $nin: ['ahmedkhaled511998@gmail.com', 'admin@thefinderapp.com']
     }
+  }).sort({
+    createdAt: 'desc'
   });
   return res.send({
     users
@@ -215,41 +217,53 @@ router.delete('/delete/:id', async (req, res) => {
 // })
 
 router.put('/edit/:id', async (req, res) => {
-  let id = req.params.id;
+  try {
+    let id = req.params.id;
 
-  if (!ObjectId.isValid(id))
-    return res.status(400).send(`Not valid code.`);
+    if (!ObjectId.isValid(id))
+      return res.status(400).send(`Not valid code.`);
 
-  let user = {
-    fullName: {
-      firstName: req.body.fullName.firstName,
-      lastName: req.body.fullName.lastName
-    },
-    phoneNumber: req.body.phoneNumber,
-    address: req.body.address,
-    email: req.body.email
-  };
+    let user = {
+      _id: req.body._id,
+      fullName: {
+        firstName: req.body.fullName.firstName,
+        lastName: req.body.fullName.lastName
+      },
+      phoneNumber: req.body.phoneNumber,
+      address: req.body.address,
+      email: req.body.email
+    };
 
-  let count = await Users.find({
-    email: user.email
-  }).count();
+    let count = await Users.find({
+      email: user.email
+    }).countDocuments();
 
-  if (count > 0) {
-    return res.send({
-      error: 'Email already belongs to another user.'
+    let currentMail = await Users.findOne({
+      _id: user._id
     });
-  }
 
-  await Users.findByIdAndUpdate(id, {
-    $set: user
-  }, {
-    new: true,
-    // upsert: true
-  }, (err, doc) => {
-    if (!err) {
+    if (count > 0 && currentMail.email != user.email) {
+      return res.send({
+        error: 'Email already belongs to another user.'
+      });
+    }
+
+    let doc = await Users.updateOne({
+      _id: id
+    }, {
+      $set: user
+    }, {
+      new: true
+    });
+
+    if (doc) {
+      let doc = await Users.findOne({
+        _id: user._id
+      });
+
       let admin = false;
 
-      if (doc.email === 'ahmedkhaled511998@gmail.com' || doc.email === 'admin@pjdmeds.com') {
+      if (doc.email === 'ahmedkhaled511998@gmail.com' || doc.email === 'admin@thefinderapp.com') {
         admin = true;
       }
 
@@ -271,7 +285,59 @@ router.put('/edit/:id', async (req, res) => {
     } else {
       console.log('Error in updating user :' + JSON.stringify(err, undefined, 2));
     }
-  });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.put('/change-password/:id', async (req, res) => {
+  try {
+    let id = req.params.id;
+
+    if (!ObjectId.isValid(id))
+      return res.status(400).send(`Not valid ID.`);
+
+    let pass = {
+      oldPass: req.body.oldPass,
+      newPass: req.body.newPass
+    };
+
+    let user = await Users.findOne({
+      _id: id
+    });
+
+    let matching = bcrypt.compareSync(pass.oldPass, user.password);
+
+    if (matching) {
+      user.password = bcrypt.hashSync(pass.newPass, saltRounds);
+
+      let doc = await Users.updateOne({
+        _id: user._id
+      }, {
+        $set: user
+      }, {
+        new: true
+      });
+
+      if (doc) {
+        return res.send({
+          success: 'Password has been changed successfully.'
+        });
+      } else {
+        return res.send({
+          error: 'Error occurred.'
+        })
+      }
+    }
+
+    return res.send({
+      error: 'Current password is invalid.'
+    });
+  } catch (error) {
+    res.send({
+      error
+    });
+  }
 });
 
 module.exports = router;

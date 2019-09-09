@@ -9,7 +9,9 @@ sgMail.setApiKey(
 );
 
 router.get("/", async (req, res) => {
-  let contact = await Contact.find();
+  let contact = await Contact.find().sort({
+    createdAt: 'desc'
+  });
 
   if (contact) {
     res.send(contact);

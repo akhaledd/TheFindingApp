@@ -17,7 +17,7 @@ const orderSchema = new Schema({
   },
   tags: [{
     type: Schema.Types.ObjectId,
-    ref: 'Tags'
+    ref: 'Products'
   }],
   user: {
     type: Schema.Types.ObjectId,
@@ -28,6 +28,48 @@ const orderSchema = new Schema({
     required: true,
     type: String,
     default: 'Pending'
+  },
+  card_details: {
+    country: {
+      type: String,
+      default: 'Unknown'
+    },
+    card_type: {
+      type: String,
+      default: 'Unknown'
+    },
+    exp_month: {
+      type: Number,
+      default: 0
+    },
+    exp_year: {
+      type: Number,
+      default: 0
+    },
+    funding: {
+      type: String,
+      default: 'Unknown'
+    },
+    last4: {
+      type: String,
+      default: 'Unknown'
+    },
+    clientIp: {
+      type: String,
+      default: '0.0.0.0'
+    },
+    name_on_card: {
+      type: String,
+      default: 'Unknown'
+    },
+    card_id: {
+      type: String,
+      default: 'Unknown'
+    }
+  },
+  stripe_token: {
+    type: String,
+    default: 'Unknown'
   }
 }, {
   timestamps: {

@@ -26,26 +26,24 @@ app.use(express.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname)));
 
 app.use(cors({
   credentials: true,
-  origin: true
+  origin: ["http://localhost:3000", "http://localhost:4200", "http://thefinderapp.com"]
 }));
 
-app.use(function (req, res, next) {
-  // res.header("Access-Control-Allow-Origin", "https://www.lascoota.com");
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header("Access-Control-Allow-Credentials", "true");
-  next();
-});
+// app.use(function (req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   res.header("Access-Control-Allow-Credentials", "true");
+//   next();
+// });
 
 // ===== Routing ======
 var apiRouter = require('./routes/api');
 app.use('/api/v1', apiRouter);
 
-// app.use('/', indexRouter);
-// app.use('/users', usersRouter);
 // Index Router
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/index.html'));
