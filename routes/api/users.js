@@ -12,7 +12,7 @@ const saltRounds = 10;
 router.get('/', async (req, res) => {
   let users = await Users.find({
     email: {
-      $nin: ['ahmedkhaled511998@gmail.com', 'admin@thefinderapp.com']
+      $nin: ['ahmedkhaled511998@gmail.com', 'javierlarosa@hotmail.com']
     }
   }).sort({
     createdAt: 'desc'
@@ -53,7 +53,7 @@ router.post('/register', async (req, res) => {
     if (result) {
       let admin = false;
 
-      if (result.email === 'ahmedkhaled511998@gmail.com' || result.email === 'admin@thefinderapp.com') {
+      if (result.email === 'ahmedkhaled511998@gmail.com' || result.email === 'javierlarosa@hotmail.com') {
         admin = true;
       }
 
@@ -107,7 +107,7 @@ router.post('/login', async (req, res) => {
   if (matching) {
     let admin = false;
 
-    if (user.email === 'ahmedkhaled511998@gmail.com' || user.email === 'admin@thefinderapp.com') {
+    if (user.email === 'ahmedkhaled511998@gmail.com' || user.email === 'javierlarosa@hotmail.com') {
       admin = true;
     }
 
@@ -263,7 +263,7 @@ router.put('/edit/:id', async (req, res) => {
 
       let admin = false;
 
-      if (doc.email === 'ahmedkhaled511998@gmail.com' || doc.email === 'admin@thefinderapp.com') {
+      if (doc.email === 'ahmedkhaled511998@gmail.com' || doc.email === 'javierlarosa@hotmail.com') {
         admin = true;
       }
 

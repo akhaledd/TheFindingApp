@@ -29,7 +29,7 @@ router.post('/reset-password', async (req, res) => {
   let result = await verification.save();
 
   if (result) {
-    let html = `Please <a href='https://www.thefinderapp.com/reset-password/${result._id}'>click here</a> to reset your password
+    let html = `Please <a href='https://thefinderapp.com/reset-password/${result._id}'>click here</a> to reset your password
     <br><br>
     This link can be used only one time.`;
     sendMail("Password Reset Request at TheFinderApp.com", user.email, html);
