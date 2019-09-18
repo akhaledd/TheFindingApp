@@ -111,8 +111,8 @@ router.delete("/delete/:id", async (req, res) => {
 
 function sendMail(subject, fromEmail, message, fn, ln, phone) {
   let msg = {
-    to: "javierlarosa@hotmail.com",
-    // to: "support@thefinderapp.com",
+    // to: "javierlarosa@hotmail.com",
+    to: "info@thefindingapp.com",
     from: fromEmail,
     subject: subject,
     html: `<strong>Full Name: </strong> ${fn} ${ln}<br><strong>Phone: </strong> ${phone}<br><strong>Email: </strong>${fromEmail}<br><strong>Message: </strong> ${message}`

@@ -29,10 +29,10 @@ router.post('/reset-password', async (req, res) => {
   let result = await verification.save();
 
   if (result) {
-    let html = `Please <a href='https://thefinderapp.com/reset-password/${result._id}'>click here</a> to reset your password
+    let html = `Please <a href='https://thefindingapp.com/reset-password/${result._id}'>click here</a> to reset your password
     <br><br>
     This link can be used only one time.`;
-    sendMail("Password Reset Request at TheFinderApp.com", user.email, html);
+    sendMail("Password Reset Request at TheFindingApp.com", user.email, html);
     return res.send({
       success: "A message has been sent to your email, follow instructions to reset your password."
     });
@@ -111,7 +111,7 @@ router.put('/reset-password/:id', async (req, res) => {
 
 function sendMail(subject, to, html) {
   let msg = {
-    from: 'no-reply@thefinderapp.com',
+    from: 'no-reply@thefindingapp.com',
     to,
     subject,
     html

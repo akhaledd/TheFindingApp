@@ -6,7 +6,7 @@ const logger = require('morgan');
 const cors = require('cors')
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/TheFinderApp', {
+mongoose.connect('mongodb://localhost:27017/TheFindingApp', {
   useNewUrlParser: true
 });
 
@@ -30,7 +30,7 @@ app.use(express.static(path.join(__dirname)));
 
 app.use(cors({
   credentials: true,
-  origin: ["http://localhost:3000", "http://localhost:4200", "http://thefinderapp.com"]
+  origin: ["http://localhost:3000", "http://localhost:4200", "https://thefindingapp.com"]
 }));
 
 // app.use(function (req, res, next) {

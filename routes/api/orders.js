@@ -75,7 +75,7 @@ router.post("/add", async (req, res) => {
           'subTotal': order.subTotal,
           'shipping': order.shipping
         },
-        description: `Pet tags from TheFinderApp.com for User ${this.user}`,
+        description: `Pet tags from TheFindingApp.com for User ${this.user}`,
         // shipping: req.body.shipping,
         // {
         //   address: req.body.shipping.address,

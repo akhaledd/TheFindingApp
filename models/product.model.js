@@ -31,7 +31,7 @@ var productSchema = new Schema({
   mainImage: {
     type: String,
     required: true,
-    default: 'http://via.placeholder.com/500x500'
+    default: 'https://via.placeholder.com/500x500'
   },
   otherImages: [{
     type: String
